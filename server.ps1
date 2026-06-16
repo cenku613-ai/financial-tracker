@@ -413,7 +413,7 @@ function Remove-Transaction {
             $val = $ws.Cells.Item($r, 1).Value2
             if ($val -eq $null -or $val -eq "") { break }
             if ([string]$val -eq [string]$Id) {
-                $ws.Rows.Item("$r:$r").Delete()
+                $ws.Rows.Item("${r}:${r}").Delete()
                 $handle.Wb.Save()
                 $found = $true
                 break
@@ -578,5 +578,5 @@ try {
     }
 } finally {
     $listener.Stop()
-    Write-Host "`nServer stopped." -ForegroundColor Yellow
+    Write-Host "Server stopped." -ForegroundColor Yellow
 }
