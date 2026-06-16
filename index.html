@@ -277,8 +277,14 @@ async function del(path){return api(path,{method:'DELETE'});}
 
 // ── Config ──
 async function loadConfig(){
-    config=await get('/config');
-    populateSelects();
+    try{
+        const c=await get('/config');
+        if(c){config=c;populateSelects();}
+        else console.warn('Config load returned null');
+    }catch(e){
+        console.error('Failed to load config:',e);
+        toast('Failed to load config','error');
+    }
 }
 
 function populateSelects(){
@@ -288,9 +294,17 @@ function populateSelects(){
     fill('f_Subtype',config.subtypes||[]);
     fill('f_Environment',config.environments||[]);
     fill('f_LicenseSubscriptionStatus',config.licenseStatuses||[]);
-    // Filter selects
     fill('filterType',config.types||[]);
     fill('filterCategory',config.categories||[]);
+    // Populate platform datalist
+    populateDatalist('d_Platform',config.platforms||[]);
+}
+
+function populateDatalist(id,options){
+    const dl=document.getElementById(id);
+    if(!dl)return;
+    dl.innerHTML='';
+    options.forEach(o=>{const opt=document.createElement('option');opt.value=o;dl.appendChild(opt);});
 }
 
 function fill(id,options){
@@ -311,10 +325,14 @@ async function loadSummary(){
         const active=(s.statuses||[]).find(x=>x.Name==='Active'||x.Name==='In Progress');
         document.getElementById('sActive').textContent=active?active.Count:0;
         document.getElementById('sCats').textContent=(s.categories||[]).length;
-        // Vendor filter
+        // Vendor filter (clear first to avoid duplicates on reload)
+        allVendors=[];
         const vf=document.getElementById('filterVendor');
+        vf.innerHTML='<option value="">All Vendors</option>';
         (s.topVendors||[]).forEach(v=>{
-            if(!allVendors.includes(v.Name)){allVendors.push(v.Name);const opt=document.createElement('option');opt.value=v.Name;opt.textContent=v.Name;vf.appendChild(opt);}
+            allVendors.push(v.Name);
+            const opt=document.createElement('option');
+            opt.value=v.Name;opt.textContent=v.Name;vf.appendChild(opt);
         });
         renderCategoryBreakdown(s.categories||[]);
         renderVendorBreakdown(s.topVendors||[]);
@@ -473,9 +491,23 @@ function removeConfigItem(field,item){
     openSettings();
 }
 
+function onCategoryChange(){
+    // future: filter subtypes based on category selection
+}
+
+function onStatusChange(){
+    // future: conditionally show/hide fields based on status
+}
+
 async function saveSettings(){
-    try{await put('/config',config);toast('Settings saved','success');closeSettings();loadConfig();}
-    catch(e){toast(e.message,'error');}
+    try{
+        await put('/config',config);
+        toast('Settings saved','success');
+        closeSettings();
+        populateSelects(); // reuse in-memory config, no async needed
+    }catch(e){
+        toast(e.message,'error');
+    }
 }
 
 // ── Tab Switch ──
@@ -493,6 +525,16 @@ document.getElementById('filterType').addEventListener('change',loadTransactions
 document.getElementById('filterCategory').addEventListener('change',loadTransactions);
 document.getElementById('filterStatus').addEventListener('change',loadTransactions);
 document.getElementById('filterVendor').addEventListener('change',loadTransactions);
+
+// ── Toast ──
+function toast(msg,type='info'){
+    const t=document.createElement('div');
+    t.style.cssText=`position:fixed;top:20px;right:20px;padding:12px 24px;border-radius:8px;color:#fff;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;${type==='success'?'background:#34d399':type==='error'?'background:#f87171':'background:#6c8cff'}`;
+    t.textContent=msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(()=>t.style.opacity='1');
+    setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},2500);
+}
 
 // ── Helpers ──
 function formatMoney(v){const n=parseFloat(v)||0;return n.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2});}
