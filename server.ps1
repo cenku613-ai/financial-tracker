@@ -578,5 +578,5 @@ try {
     }
 } finally {
     $listener.Stop()
-    Write-Host "Server stopped." -ForegroundColor Yellow
+    Write-Host 'Server stopped.' -ForegroundColor Yellow
 }
