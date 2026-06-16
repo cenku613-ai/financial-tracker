@@ -1,7 +1,7 @@
 <#
 .VERSION 2.0
 .AUTHOR Hermes Agent
-.DESCRIPTION Financial/Procurement Tracker — PowerShell HTTP server + Excel COM backend.
+.DESCRIPTION Financial/Procurement Tracker - PowerShell HTTP server + Excel COM backend.
              Supports 32 fields, configurable categories/types, and a settings page.
 .NOTES
   Run: .\server.ps1
@@ -9,14 +9,14 @@
   Requirements: Windows + PowerShell 5.1+ + Excel (pre-installed)
 #>
 
-# ── Configuration ──────────────────────────────────────────────
+# -- Configuration ----------------------------------------------
 $PORT      = 8080
 $HOST      = "http://localhost:$PORT/"
 $SCRIPT_DIR = if ($PSScriptRoot -and $PSScriptRoot -ne '') { $PSScriptRoot } else { Split-Path $MyInvocation.MyCommand.Definition }
 $DATA_FILE = Join-Path $SCRIPT_DIR 'data.xlsx'
 $CONFIG_FILE = Join-Path $SCRIPT_DIR 'config.json'
 
-# ── Field Schema (column index → field name) ──────────────────
+# -- Field Schema (column index - field name) ------------------
 # 1=ID, 2=Date, 3=Platform, 4=PRFNumber, 5=ProjectDescription,
 # 6=SOWEffectiveDate, 7=SOWEndDate, 8=ContractNo, 9=Status,
 # 10=YearofPurchasing, 11=PurchasedBy, 12=Vendor, 13=RequestTask,
@@ -60,7 +60,7 @@ $FIELD_MAP = @{
     32 = 'Remark'
 }
 
-# ── Helpers ────────────────────────────────────────────────────
+# -- Helpers ----------------------------------------------------
 
 function Send-JsonResponse {
     param($Context, $StatusCode = 200, $Body = @{})
@@ -113,7 +113,7 @@ function Get-RequestBody {
     return [System.Text.Encoding]::UTF8.GetString($bytes)
 }
 
-# ── Config Management (config.json) ───────────────────────────
+# -- Config Management (config.json) ---------------------------
 
 function Get-DefaultConfig {
     return @{
@@ -145,7 +145,7 @@ function Save-Config {
     $Config | ConvertTo-Json -Depth 2 | Set-Content $CONFIG_FILE
 }
 
-# ── Excel COM Operations ───────────────────────────────────────
+# -- Excel COM Operations ---------------------------------------
 
 function Initialize-ExcelFile {
     if (!(Test-Path $DATA_FILE)) {
@@ -441,22 +441,22 @@ function Get-Transaction {
     return $tx
 }
 
-# ── Initialize ─────────────────────────────────────────────────
+# -- Initialize -------------------------------------------------
 Initialize-ExcelFile
 Get-Config | Out-Null  # Creates config.json if missing
 
-# ── HTTP Server ────────────────────────────────────────────────
+# -- HTTP Server ------------------------------------------------
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add($HOST)
 $listener.Start()
 Write-Host ''
-Write-Host '╔══════════════════════════════════════════════════╗' -ForegroundColor Cyan
-Write-Host '║   Financial Tracker v2.0 — Server Started        ║' -ForegroundColor Cyan
-Write-Host "║   http://localhost:$PORT                         ║' -ForegroundColor Cyan
-Write-Host '║   Data: $DATA_FILE' -ForegroundColor Cyan
-Write-Host '║   Config: $CONFIG_FILE' -ForegroundColor Cyan
-Write-Host '║   Press Ctrl+C to stop                           ║' -ForegroundColor Cyan
-Write-Host '╚══════════════════════════════════════════════════╝' -ForegroundColor Cyan
+Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
+Write-Host '|   Financial Tracker v2.0 - Server Started        |' -ForegroundColor Cyan
+Write-Host "|   http://localhost:$PORT                         |' -ForegroundColor Cyan
+Write-Host '|   Data: $DATA_FILE' -ForegroundColor Cyan
+Write-Host '|   Config: $CONFIG_FILE' -ForegroundColor Cyan
+Write-Host '|   Press Ctrl+C to stop                           |' -ForegroundColor Cyan
+Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
 Write-Host '"
 
 try {
@@ -472,7 +472,7 @@ try {
             continue
         }
 
-        # ── Config API ──
+        # -- Config API --
         if ($path -eq '/api/config') {
             if ($method -eq 'GET') {
                 Send-JsonResponse -Context $context -Body (Get-Config)
@@ -485,7 +485,7 @@ try {
             continue
         }
 
-        # ── Transactions List ──
+        # -- Transactions List --
         if ($path -eq '/api/transactions') {
             if ($method -eq 'GET') {
                 $all = Read-Transactions
@@ -516,7 +516,7 @@ try {
             continue
         }
 
-        # ── Single Transaction ──
+        # -- Single Transaction --
         if ($path -match '^/api/transactions/(\d+)$') {
             $id = $Matches[1]
             if ($method -eq 'GET') {
@@ -537,7 +537,7 @@ try {
             continue
         }
 
-        # ── Summary ──
+        # -- Summary --
         if ($path -eq '/api/summary') {
             if ($method -eq 'GET') {
                 $all = Read-Transactions
@@ -568,7 +568,7 @@ try {
             continue
         }
 
-        # ── Static Files ──
+        # -- Static Files --
         if ($path -eq '') { Send-HtmlResponse -Context $context -Path 'index.html' }
         else {
             $fileName = $path.Substring(1)
