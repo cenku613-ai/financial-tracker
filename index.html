@@ -310,9 +310,10 @@ function populateDatalist(id,options){
 function fill(id,options){
     const sel=document.getElementById(id);
     if(!sel)return;
-    const first=sel.options[0];
+    // Preserve default option if it exists; otherwise add one for form selects
+    const hasDefault=sel.options&&sel.options.length>0&&sel.options[0].value==='';
     sel.innerHTML='';
-    sel.appendChild(first);
+    if(!hasDefault){const def=document.createElement('option');def.value='';def.textContent='';sel.appendChild(def);}
     options.forEach(o=>{const opt=document.createElement('option');opt.value=o;opt.textContent=o;sel.appendChild(opt);});
 }
 
