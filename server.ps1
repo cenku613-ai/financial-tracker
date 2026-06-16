@@ -12,9 +12,9 @@
 # ── Configuration ──────────────────────────────────────────────
 $PORT      = 8080
 $HOST      = "http://localhost:$PORT/"
-$SCRIPT_DIR = if ($PSScriptRoot -and $PSScriptRoot -ne "") { $PSScriptRoot } else { Split-Path $MyInvocation.MyCommand.Definition }
-$DATA_FILE = Join-Path $SCRIPT_DIR "data.xlsx"
-$CONFIG_FILE = Join-Path $SCRIPT_DIR "config.json"
+$SCRIPT_DIR = if ($PSScriptRoot -and $PSScriptRoot -ne '') { $PSScriptRoot } else { Split-Path $MyInvocation.MyCommand.Definition }
+$DATA_FILE = Join-Path $SCRIPT_DIR 'data.xlsx'
+$CONFIG_FILE = Join-Path $SCRIPT_DIR 'config.json'
 
 # ── Field Schema (column index → field name) ──────────────────
 # 1=ID, 2=Date, 3=Platform, 4=PRFNumber, 5=ProjectDescription,
@@ -26,38 +26,38 @@ $CONFIG_FILE = Join-Path $SCRIPT_DIR "config.json"
 # 24=Type, 25=Subtype, 26=Qty, 27=UnitPriceUSD, 28=ServiceYears,
 # 29=TotalAmountUSD, 30=ServicePeriodStart, 31=ServicePeriodEnd, 32=Remark
 $FIELD_MAP = @{
-    1  = "ID"
-    2  = "Date"
-    3  = "Platform"
-    4  = "PRFNumber"
-    5  = "ProjectDescription"
-    6  = "SOWEffectiveDate"
-    7  = "SOWEndDate"
-    8  = "ContractNo"
-    9  = "Status"
-    10 = "YearofPurchasing"
-    11 = "PurchasedBy"
-    12 = "Vendor"
-    13 = "RequestTask"
-    14 = "PRNumber"
-    15 = "PONumber"
-    16 = "RenewForPONumber"
-    17 = "DeliveryNote"
-    18 = "InvoiceNo"
-    19 = "PartNumber"
-    20 = "PartNoDescription"
-    21 = "LicenseSubscriptionStatus"
-    22 = "Category"
-    23 = "Environment"
-    24 = "Type"
-    25 = "Subtype"
-    26 = "Qty"
-    27 = "UnitPriceUSD"
-    28 = "ServiceYears"
-    29 = "TotalAmountUSD"
-    30 = "ServicePeriodStart"
-    31 = "ServicePeriodEnd"
-    32 = "Remark"
+    1  = 'ID'
+    2  = 'Date'
+    3  = 'Platform'
+    4  = 'PRFNumber'
+    5  = 'ProjectDescription'
+    6  = 'SOWEffectiveDate'
+    7  = 'SOWEndDate'
+    8  = 'ContractNo'
+    9  = 'Status'
+    10 = 'YearofPurchasing'
+    11 = 'PurchasedBy'
+    12 = 'Vendor'
+    13 = 'RequestTask'
+    14 = 'PRNumber'
+    15 = 'PONumber'
+    16 = 'RenewForPONumber'
+    17 = 'DeliveryNote'
+    18 = 'InvoiceNo'
+    19 = 'PartNumber'
+    20 = 'PartNoDescription'
+    21 = 'LicenseSubscriptionStatus'
+    22 = 'Category'
+    23 = 'Environment'
+    24 = 'Type'
+    25 = 'Subtype'
+    26 = 'Qty'
+    27 = 'UnitPriceUSD'
+    28 = 'ServiceYears'
+    29 = 'TotalAmountUSD'
+    30 = 'ServicePeriodStart'
+    31 = 'ServicePeriodEnd'
+    32 = 'Remark'
 }
 
 # ── Helpers ────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ function Send-JsonResponse {
         $json = $Body | ConvertTo-Json -Depth 4
         $buffer = [System.Text.Encoding]::UTF8.GetBytes($json)
         $Context.Response.StatusCode = $StatusCode
-        $Context.Response.ContentType = "application/json; charset=utf-8"
+        $Context.Response.ContentType = 'application/json; charset=utf-8'
         $Context.Response.ContentLength64 = $buffer.Length
         $Context.Response.OutputStream.Write($buffer, 0, $buffer.Length) | Out-Null
         $Context.Response.Close()
@@ -117,13 +117,13 @@ function Get-RequestBody {
 
 function Get-DefaultConfig {
     return @{
-        categories = @("Hardware","Software","Service","Subscription","License","Cloud","Consulting","Maintenance")
-        types      = @("Purchase","Rental","Subscription","Contract","License","Renewal")
-        subtypes   = @("One-time","Recurring","Annual","Monthly","Per-project")
-        statuses   = @("Draft","Submitted","Approved","In Progress","Completed","Cancelled","On Hold")
-        environments = @("Production","Development","Staging","Testing","Disaster Recovery")
-        licenseStatuses = @("Active","Expired","Pending","Renewed","Trial","Grace Period")
-        platforms  = @("Windows","Linux","macOS","Cloud","On-premise","Hybrid","Network","Storage")
+        categories = @('Hardware','Software','Service','Subscription','License','Cloud','Consulting','Maintenance')
+        types      = @('Purchase','Rental','Subscription','Contract','License','Renewal')
+        subtypes   = @('One-time','Recurring','Annual','Monthly','Per-project')
+        statuses   = @('Draft','Submitted','Approved','In Progress','Completed','Cancelled','On Hold')
+        environments = @('Production','Development','Staging','Testing','Disaster Recovery')
+        licenseStatuses = @('Active','Expired','Pending','Renewed','Trial','Grace Period')
+        platforms  = @('Windows','Linux','macOS','Cloud','On-premise','Hybrid','Network','Storage')
     }
 }
 
@@ -155,14 +155,14 @@ function Initialize-ExcelFile {
             $excel.DisplayAlerts = $false
             $wb = $excel.Workbooks.Add()
             $ws = $wb.Sheets.Item(1)
-            $ws.Name = "Transactions"
-            $headers = @("ID","Date","Platform","PRFNumber","ProjectDescription",
-                "SOWEffectiveDate","SOWEndDate","ContractNo","Status","YearofPurchasing",
-                "PurchasedBy","Vendor","RequestTask","PRNumber","PONumber",
-                "RenewForPONumber","DeliveryNote","InvoiceNo","PartNumber","PartNoDescription",
-                "LicenseSubscriptionStatus","Category","Environment","Type","Subtype",
-                "Qty","UnitPriceUSD","ServiceYears","TotalAmountUSD",
-                "ServicePeriodStart","ServicePeriodEnd","Remark")
+            $ws.Name = 'Transactions'
+            $headers = @('ID','Date','Platform','PRFNumber','ProjectDescription',
+                'SOWEffectiveDate','SOWEndDate','ContractNo','Status','YearofPurchasing',
+                'PurchasedBy','Vendor','RequestTask','PRNumber','PONumber',
+                'RenewForPONumber','DeliveryNote','InvoiceNo','PartNumber','PartNoDescription',
+                'LicenseSubscriptionStatus','Category','Environment','Type','Subtype',
+                'Qty','UnitPriceUSD','ServiceYears','TotalAmountUSD',
+                'ServicePeriodStart','ServicePeriodEnd','Remark')
             for ($i = 1; $i -le $headers.Count; $i++) {
                 $ws.Cells.Item(1, $i).Value2 = $headers[$i - 1]
                 $ws.Cells.Item(1, $i).Font.Bold = $true
@@ -184,10 +184,10 @@ function Get-NextId {
     try {
         $excel.Visible = $false; $excel.DisplayAlerts = $false
         $wb = $excel.Workbooks.Open($DATA_FILE)
-        $ws = $wb.Sheets.Item("Transactions")
+        $ws = $wb.Sheets.Item('Transactions')
         for ($r = 2; $r -le 10000; $r++) {
             $val = $ws.Cells.Item($r, 1).Value2
-            if ($val -eq $null -or $val -eq "") { break }
+            if ($val -eq $null -or $val -eq '') { break }
             $numId = [double]::Parse($val)
             if ($numId -gt $maxId) { $maxId = $numId }
         }
@@ -260,7 +260,7 @@ function Object-To-Row {
                 $ws.Cells.Item($row, $i).Value2 = $val
             }
         } else {
-            $ws.Cells.Item($row, $i).Value2 = ""
+            $ws.Cells.Item($row, $i).Value2 = ''
         }
     }
 }
@@ -270,7 +270,7 @@ function Open-Excel {
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $wb = $excel.Workbooks.Open($DATA_FILE)
-    $ws = $wb.Sheets.Item("Transactions")
+    $ws = $wb.Sheets.Item('Transactions')
     return @{ Excel = $excel; Wb = $wb; Ws = $ws }
 }
 
@@ -290,7 +290,7 @@ function Read-Transactions {
         $ws = $handle.Ws
         for ($r = 2; $r -le 10000; $r++) {
             $id = $ws.Cells.Item($r, 1).Value2
-            if ($id -eq $null -or $id -eq "") { break }
+            if ($id -eq $null -or $id -eq '') { break }
             $transactions += Row-To-Object -ws $ws -row $r
         }
     } finally { Close-Excel -handle $handle }
@@ -306,7 +306,7 @@ function Add-Transaction {
         $nextRow = 2
         while ($true) {
             $val = $ws.Cells.Item($nextRow, 1).Value2
-            if ($val -eq $null -or $val -eq "") { break }
+            if ($val -eq $null -or $val -eq '') { break }
             $nextRow++
         }
         $obj = [PSCustomObject]@{
@@ -346,7 +346,7 @@ function Add-Transaction {
         Object-To-Row -ws $ws -row $nextRow -obj $obj
         $handle.Wb.Save()
     } finally { Close-Excel -handle $handle }
-    return @{ id = $nextId; message = "Transaction added" }
+    return @{ id = $nextId; message = 'Transaction added' }
 }
 
 function Update-Transaction {
@@ -357,7 +357,7 @@ function Update-Transaction {
         $ws = $handle.Ws
         for ($r = 2; $r -le 10000; $r++) {
             $val = $ws.Cells.Item($r, 1).Value2
-            if ($val -eq $null -or $val -eq "") { break }
+            if ($val -eq $null -or $val -eq '') { break }
             if ([string]$val -eq [string]$Id) {
                 $obj = [PSCustomObject]@{
                     ID                      = $Id
@@ -411,7 +411,7 @@ function Remove-Transaction {
         $ws = $handle.Ws
         for ($r = 2; $r -le 10000; $r++) {
             $val = $ws.Cells.Item($r, 1).Value2
-            if ($val -eq $null -or $val -eq "") { break }
+            if ($val -eq $null -or $val -eq '') { break }
             if ([string]$val -eq [string]$Id) {
                 $ws.Rows.Item("${r}:${r}").Delete()
                 $handle.Wb.Save()
@@ -431,7 +431,7 @@ function Get-Transaction {
         $ws = $handle.Ws
         for ($r = 2; $r -le 10000; $r++) {
             $val = $ws.Cells.Item($r, 1).Value2
-            if ($val -eq $null -or $val -eq "") { break }
+            if ($val -eq $null -or $val -eq '') { break }
             if ([string]$val -eq [string]$Id) {
                 $tx = Row-To-Object -ws $ws -row $r
                 break
@@ -449,15 +449,15 @@ Get-Config | Out-Null  # Creates config.json if missing
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add($HOST)
 $listener.Start()
-Write-Host ""
-Write-Host "╔══════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║   Financial Tracker v2.0 — Server Started        ║" -ForegroundColor Cyan
-Write-Host "║   http://localhost:$PORT                         ║" -ForegroundColor Cyan
-Write-Host "║   Data: $DATA_FILE" -ForegroundColor Cyan
-Write-Host "║   Config: $CONFIG_FILE" -ForegroundColor Cyan
-Write-Host "║   Press Ctrl+C to stop                           ║" -ForegroundColor Cyan
-Write-Host "╚══════════════════════════════════════════════════╝" -ForegroundColor Cyan
-Write-Host ""
+Write-Host ''
+Write-Host '╔══════════════════════════════════════════════════╗' -ForegroundColor Cyan
+Write-Host '║   Financial Tracker v2.0 — Server Started        ║' -ForegroundColor Cyan
+Write-Host "║   http://localhost:$PORT                         ║' -ForegroundColor Cyan
+Write-Host '║   Data: $DATA_FILE' -ForegroundColor Cyan
+Write-Host '║   Config: $CONFIG_FILE' -ForegroundColor Cyan
+Write-Host '║   Press Ctrl+C to stop                           ║' -ForegroundColor Cyan
+Write-Host '╚══════════════════════════════════════════════════╝' -ForegroundColor Cyan
+Write-Host '"
 
 try {
     while ($listener.IsListening) {
@@ -466,7 +466,7 @@ try {
         $method = $context.Request.HttpMethod
         $queryString = $context.Request.Url.Query
 
-        if ($method -eq "OPTIONS") {
+        if ($method -eq 'OPTIONS') {
             $context.Response.StatusCode = 200
             $context.Response.Close()
             continue
@@ -480,7 +480,7 @@ try {
                 $raw = Get-RequestBody -Context $context
                 $cfg = $raw | ConvertFrom-Json
                 Save-Config -Config $cfg
-                Send-JsonResponse -Context $context -Body @{ message = "Config saved" }
+                Send-JsonResponse -Context $context -Body @{ message = 'Config saved' }
             }
             continue
         }
@@ -491,12 +491,12 @@ try {
                 $all = Read-Transactions
                 if ($queryString) {
                     $params = [System.Web.HttpUtility]::ParseQueryString($queryString)
-                    if ($params["category"]) { $all = $all | Where-Object { $_.Category -eq $params["category"] } }
-                    if ($params["type"]) { $all = $all | Where-Object { $_.Type -eq $params["type"] } }
-                    if ($params["status"]) { $all = $all | Where-Object { $_.Status -eq $params["status"] } }
-                    if ($params["vendor"]) { $all = $all | Where-Object { $_.Vendor -like "*$($params["vendor"])*" } }
-                    if ($params["search"]) {
-                        $s = $params["search"]
+                    if ($params['category']) { $all = $all | Where-Object { $_.Category -eq $params['category'] } }
+                    if ($params['type']) { $all = $all | Where-Object { $_.Type -eq $params['type'] } }
+                    if ($params['status']) { $all = $all | Where-Object { $_.Status -eq $params['status'] } }
+                    if ($params['vendor']) { $all = $all | Where-Object { $_.Vendor -like "*$($params['vendor'])*" } }
+                    if ($params['search']) {
+                        $s = $params['search']
                         $all = $all | Where-Object {
                             ($_.ProjectDescription -and $_.ProjectDescription -like "*$s*") -or
                             ($_.PONumber -and $_.PONumber -like "*$s*") -or
@@ -522,17 +522,17 @@ try {
             if ($method -eq 'GET') {
                 $tx = Get-Transaction -Id $id
                 if ($tx) { Send-JsonResponse -Context $context -Body $tx }
-                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = "Not found" } }
+                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = 'Not found' } }
             } elseif ($method -eq 'PUT') {
                 $raw = Get-RequestBody -Context $context
                 $body = $raw | ConvertFrom-Json
                 $result = Update-Transaction -Id $id -Body $body
-                if ($result) { Send-JsonResponse -Context $context -Body @{ message = "Updated" } }
-                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = "Not found" } }
+                if ($result) { Send-JsonResponse -Context $context -Body @{ message = 'Updated' } }
+                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = 'Not found' } }
             } elseif ($method -eq 'DELETE') {
                 $result = Remove-Transaction -Id $id
-                if ($result) { Send-JsonResponse -Context $context -Body @{ message = "Deleted" } }
-                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = "Not found" } }
+                if ($result) { Send-JsonResponse -Context $context -Body @{ message = 'Deleted' } }
+                else { Send-JsonResponse -Context $context -StatusCode 404 -Body @{ message = 'Not found' } }
             }
             continue
         }
@@ -569,7 +569,7 @@ try {
         }
 
         # ── Static Files ──
-        if ($path -eq '') { Send-HtmlResponse -Context $context -Path "index.html" }
+        if ($path -eq '') { Send-HtmlResponse -Context $context -Path 'index.html' }
         else {
             $fileName = $path.Substring(1)
             if ($fileName -eq '') { $fileName = 'index.html' }
