@@ -11,7 +11,7 @@
 
 # -- Configuration ----------------------------------------------
 $PORT      = 8080
-$HOST      = "http://localhost:$PORT/"
+$ServerUrl  = "http://localhost:$PORT/"
 $SCRIPT_DIR = if ($PSScriptRoot -and $PSScriptRoot -ne '') { $PSScriptRoot } else { Split-Path $MyInvocation.MyCommand.Definition }
 $DATA_FILE = Join-Path $SCRIPT_DIR 'data.xlsx'
 $CONFIG_FILE = Join-Path $SCRIPT_DIR 'config.json'
@@ -447,17 +447,16 @@ Get-Config | Out-Null  # Creates config.json if missing
 
 # -- HTTP Server ------------------------------------------------
 $listener = New-Object System.Net.HttpListener
-$listener.Prefixes.Add($HOST)
+$listener.Prefixes.Add($ServerUrl)
 $listener.Start()
 Write-Host ''
 Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
 Write-Host '|   Financial Tracker v2.0 - Server Started        |' -ForegroundColor Cyan
-Write-Host "|   http://localhost:$PORT                         |' -ForegroundColor Cyan
-Write-Host '|   Data: $DATA_FILE' -ForegroundColor Cyan
-Write-Host '|   Config: $CONFIG_FILE' -ForegroundColor Cyan
+Write-Host "|   http://localhost:$PORT                         |" -ForegroundColor Cyan
+Write-Host '|   Data: '"$DATA_FILE" --' -ForegroundColor Cyan
+Write-Host '|   Config: '"$CONFIG_FILE" --' -ForegroundColor Cyan
 Write-Host '|   Press Ctrl+C to stop                           |' -ForegroundColor Cyan
 Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
-Write-Host '"
 
 try {
     while ($listener.IsListening) {
