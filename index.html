@@ -277,7 +277,7 @@ async function del(path){return api(path,{method:'DELETE'});}
 
 // ── Config ──
 async function loadConfig(){
-    config=await get('/api/config');
+    config=await get('/config');
     populateSelects();
 }
 
@@ -305,7 +305,7 @@ function fill(id,options){
 // ── Summary ──
 async function loadSummary(){
     try{
-        const s=await get('/api/summary');
+        const s=await get('/summary');
         document.getElementById('sTotal').textContent=s.totalTransactions||0;
         document.getElementById('sAmount').textContent=formatMoney(s.totalAmountUSD||0);
         const active=(s.statuses||[]).find(x=>x.Name==='Active'||x.Name==='In Progress');
@@ -343,7 +343,7 @@ function renderVendorBreakdown(vendors){
 
 // ── Transactions ──
 async function loadTransactions(){
-    let url='/api/transactions?';
+    let url='/transactions?';
     const s=document.getElementById('searchInput').value.trim();
     const t=document.getElementById('filterType').value;
     const c=document.getElementById('filterCategory').value;
@@ -400,7 +400,7 @@ function closeModal(){document.getElementById('txModal').classList.remove('show'
 
 function editTx(id){
     // Fetch single transaction
-    get(`/api/transactions/${id}`).then(tx=>{
+    get(`/transactions/${id}`).then(tx=>{
         if(!tx)return;
         openModal(id);
         Object.keys(tx).forEach(k=>{
@@ -424,15 +424,15 @@ async function handleSubmit(e){
         }
     });
     try{
-        if(id){await put(`/api/transactions/${id}`,body);}
-        else{await post('/api/transactions',body);}
+        if(id){await put(`/transactions/${id}`,body);}
+        else{await post('/transactions',body);}
         closeModal();toast(id?'Updated':'Added','success');loadSummary();loadTransactions();
     }catch(err){toast(err.message,'error');}
 }
 
 async function deleteTx(id){
     if(!confirm('Delete this transaction?'))return;
-    try{await del(`/api/transactions/${id}`);toast('Deleted','success');loadSummary();loadTransactions();}
+    try{await del(`/transactions/${id}`);toast('Deleted','success');loadSummary();loadTransactions();}
     catch(err){toast(err.message,'error');}
 }
 
@@ -474,7 +474,7 @@ function removeConfigItem(field,item){
 }
 
 async function saveSettings(){
-    try{await put('/api/config',config);toast('Settings saved','success');closeSettings();loadConfig();}
+    try{await put('/config',config);toast('Settings saved','success');closeSettings();loadConfig();}
     catch(e){toast(e.message,'error');}
 }
 
