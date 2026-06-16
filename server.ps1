@@ -453,8 +453,8 @@ Write-Host ''
 Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
 Write-Host '|   Financial Tracker v2.0 - Server Started        |' -ForegroundColor Cyan
 Write-Host "|   http://localhost:$PORT                         |" -ForegroundColor Cyan
-Write-Host '|   Data: '"$DATA_FILE" --' -ForegroundColor Cyan
-Write-Host '|   Config: '"$CONFIG_FILE" --' -ForegroundColor Cyan
+Write-Host "|   Data: $DATA_FILE --" -ForegroundColor Cyan
+Write-Host "|   Config: $CONFIG_FILE --" -ForegroundColor Cyan
 Write-Host '|   Press Ctrl+C to stop                           |' -ForegroundColor Cyan
 Write-Host '+--------------------------------------------------+' -ForegroundColor Cyan
 
