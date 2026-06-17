@@ -252,12 +252,15 @@ function Object-To-Row {
     )
     for ($i = 1; $i -le 32; $i++) {
         $val = $fields[$i - 1]
-        if ($val -is [String]) { $ws.Cells.Item($row, $i).Value2 = $val }
-        elseif ($val -ne $null) {
+        $isString = $false
+        try { $isString = ($val -is [String]) } catch { }
+        if ($isString) {
+            $ws.Cells.Item($row, $i).Value2 = $val
+        } elseif ($val -ne $null) {
             if (($i -eq 26) -or ($i -eq 27) -or ($i -eq 28) -or ($i -eq 29)) {
                 $ws.Cells.Item($row, $i).Value2 = [double]::Parse($val)
             } else {
-                $ws.Cells.Item($row, $i).Value2 = "$val"
+                $ws.Cells.Item($row, $i).Value2 = $val.ToString()
             }
         } else {
             $ws.Cells.Item($row, $i).Value2 = ''
