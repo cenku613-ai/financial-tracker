@@ -257,7 +257,7 @@ function Object-To-Row {
             if (($i -eq 26) -or ($i -eq 27) -or ($i -eq 28) -or ($i -eq 29)) {
                 $ws.Cells.Item($row, $i).Value2 = [double]::Parse($val)
             } else {
-                $ws.Cells.Item($row, $i).Value2 = [string]$val
+                $ws.Cells.Item($row, $i).Value2 = "$val"
             }
         } else {
             $ws.Cells.Item($row, $i).Value2 = ''
