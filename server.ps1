@@ -258,9 +258,9 @@ function Object-To-Row {
             $ws.Cells.Item($row, $i).Value2 = $val
         } elseif ($val -ne $null) {
             if (($i -eq 26) -or ($i -eq 27) -or ($i -eq 28) -or ($i -eq 29)) {
-                $ws.Cells.Item($row, $i).Value2 = [double]::Parse($val)
+                try { $ws.Cells.Item($row, $i).Value2 = [double]::Parse($val) } catch { $ws.Cells.Item($row, $i).Value2 = '' }
             } else {
-                $ws.Cells.Item($row, $i).Value2 = $val.ToString()
+                try { $ws.Cells.Item($row, $i).Value2 = "$val" } catch { $ws.Cells.Item($row, $i).Value2 = '' }
             }
         } else {
             $ws.Cells.Item($row, $i).Value2 = ''
